@@ -48,7 +48,7 @@ unsigned long Ciclo = 0;         // horas entre inicios
 int numero_puerto_MQTT = 1883;
 const char *nmqtt = "ptg43.mooo.com";
 
-const char *nombre_dispositivo = "wemo_sepuradora";
+const char *nombre_dispositivo = "wemo_depuradora";
 
 String nombre_estado = "Salida_1";
 String nombre_completo_salida_1 = "Salida_1";
@@ -72,7 +72,7 @@ const char index_html[] PROGMEM = R"rawliteral(
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     function submitMessage() {
-      alert("Saved value to ESP SPIFFS");
+      alert("Saved value to ESP LittleFS");
       setTimeout(function(){ document.location.reload(false); }, 500);   
     }
   </script></head><body>
@@ -172,35 +172,35 @@ String processor(const String &var)
   Serial.println(var);
   if (var == "inputssid")
   {
-    return readFile(SPIFFS, "/inputssid.txt");
+    return readFile(LittleFS, "/inputssid.txt");
   }
   else if (var == "inputpassword")
   {
-    return readFile(SPIFFS, "/inputpassword.txt");
+    return readFile(LittleFS, "/inputpassword.txt");
   }
   else if (var == "servidor_MQTT")
   {
-    return readFile(SPIFFS, "/servidor_MQTT.txt");
+    return readFile(LittleFS, "/servidor_MQTT.txt");
   }
   else if (var == "puerto_MQTT")
   {
-    return readFile(SPIFFS, "/puerto_MQTT.txt");
+    return readFile(LittleFS, "/puerto_MQTT.txt");
   }
   else if (var == "dispositivo")
   {
-    return readFile(SPIFFS, "/dispositivo.txt");
+    return readFile(LittleFS, "/dispositivo.txt");
   }
   else if (var == "tiempo_inicio")
   {
-    return readFile(SPIFFS, "/tiempo_inicio.txt");
+    return readFile(LittleFS, "/tiempo_inicio.txt");
   }
   else if (var == "duracion")
   {
-    return readFile(SPIFFS, "/duracion.txt");
+    return readFile(LittleFS, "/duracion.txt");
   }
   else if (var == "ciclo")
   {
-    return readFile(SPIFFS, "/ciclo.txt");
+    return readFile(LittleFS, "/ciclo.txt");
   }
   return String();
 }
@@ -213,6 +213,7 @@ void setup_wifi()
   Serial.print("Conectando a red: ");
 
   Serial.println(ssid);
+  WiFi.hostname(nombre_dispositivo);
   WiFi.begin(ssid, password);
 
   while (WiFi.status() != WL_CONNECTED)
@@ -241,7 +242,7 @@ void s2(String tiempo)
   int duracion = tiempo.toInt();
   Duracion = duracion * minutos;
   Serial.println("Duracion: " + Duracion);
-  writeFile(SPIFFS, "/duracion.txt", tiempo.c_str());
+  writeFile(LittleFS, "/duracion.txt", tiempo.c_str());
   if (Duracion == 0)
   {
     Estado = 3;
@@ -253,7 +254,7 @@ void s3(String tiempo)
   int ciclo = tiempo.toInt();
   Ciclo = ciclo * horas;
   Serial.println("Ciclo: " + Ciclo);
-  writeFile(SPIFFS, "/ciclo.txt", tiempo.c_str());
+  writeFile(LittleFS, "/ciclo.txt", tiempo.c_str());
 }
 
 void s4(String tiempo)
@@ -261,7 +262,7 @@ void s4(String tiempo)
   int tiempo_inicio = tiempo.toInt();
   Tiempo_inicio = tiempo_inicio * minutos;
   Serial.println("Tiempo inicio: " + Tiempo_inicio);
-  writeFile(SPIFFS, "/tiempo_inicio.txt", tiempo.c_str());
+  writeFile(LittleFS, "/tiempo_inicio.txt", tiempo.c_str());
   Estado = 0;
 }
 
@@ -359,10 +360,10 @@ void setup()
 
   Valor_entrada_configuracion = digitalRead(Entrada_configuracion);
 
-  // Initialize SPIFFS
+  // Initialize LittleFS
   if (!LittleFS.begin())
   {
-    Serial.println("An Error has occurred while mounting SPIFFS");
+    Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
 
@@ -396,36 +397,36 @@ void setup()
       // GET paramssid value on <ESP_IP>/get?inputssid=<inputMessage>
       if (request->hasParam("inputssid")) {
         inputMessage = request->getParam("inputssid")->value();
-        writeFile(SPIFFS, "/inputssid.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/inputssid.txt", inputMessage.c_str());
       }
       // GET parampassword value on <ESP_IP>/get?inputpassword=<inputMessage>
       else if (request->hasParam("inputpassword")) {
         inputMessage = request->getParam("inputpassword")->value();
-        writeFile(SPIFFS, "/inputpassword.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/inputpassword.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("servidor_MQTT")) {
         inputMessage = request->getParam("servidor_MQTT")->value();
-        writeFile(SPIFFS, "/servidor_MQTT.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/servidor_MQTT.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("puerto_MQTT")) {
         inputMessage = request->getParam("puerto_MQTT")->value();
-        writeFile(SPIFFS, "/puerto_MQTT.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/puerto_MQTT.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("dispositivo")) {
         inputMessage = request->getParam("dispositivo")->value();
-        writeFile(SPIFFS, "/dispositivo.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/dispositivo.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("tiempo_inicio")) {
         inputMessage = request->getParam("tiempo_inicio")->value();
-        writeFile(SPIFFS, "/tiempo_inicio.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/tiempo_inicio.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("duracion")) {
         inputMessage = request->getParam("duracion")->value();
-        writeFile(SPIFFS, "/duracion.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/duracion.txt", inputMessage.c_str());
       } 
       else if (request->hasParam("ciclo")) {
         inputMessage = request->getParam("ciclo")->value();
-        writeFile(SPIFFS, "/ciclo.txt", inputMessage.c_str());
+        writeFile(LittleFS, "/ciclo.txt", inputMessage.c_str());
       } 
       else {
         inputMessage = "No message sent";
@@ -439,14 +440,14 @@ void setup()
   else
   {
 
-    String ssida = readFile(SPIFFS, "/inputssid.txt");
-    String passworda = readFile(SPIFFS, "/inputpassword.txt");
-    String servidor_MQTTa = readFile(SPIFFS, "/servidor_MQTT.txt");
-    String puerto_MQTTa = readFile(SPIFFS, "/puerto_MQTT.txt");
-    String dispositivoa = readFile(SPIFFS, "/dispositivo.txt");
-    String tiempo_inicioa = readFile(SPIFFS, "/tiempo_inicio.txt");
-    String duraciona = readFile(SPIFFS, "/duracion.txt");
-    String cicloa = readFile(SPIFFS, "/ciclo.txt");
+    String ssida = readFile(LittleFS, "/inputssid.txt");
+    String passworda = readFile(LittleFS, "/inputpassword.txt");
+    String servidor_MQTTa = readFile(LittleFS, "/servidor_MQTT.txt");
+    String puerto_MQTTa = readFile(LittleFS, "/puerto_MQTT.txt");
+    String dispositivoa = readFile(LittleFS, "/dispositivo.txt");
+    String tiempo_inicioa = readFile(LittleFS, "/tiempo_inicio.txt");
+    String duraciona = readFile(LittleFS, "/duracion.txt");
+    String cicloa = readFile(LittleFS, "/ciclo.txt");
 
     Tiempo_inicio = atol(tiempo_inicioa.c_str());
     Duracion = atol(duraciona.c_str());
