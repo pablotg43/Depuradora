@@ -43,6 +43,8 @@ int Estado = 0;                  // 0: INICIANDO, 1: ACTIVO, 2: EN ESPERA, 3: PA
 unsigned long Tiempo_inicio = 0; // minutos hasta primer inicio
 unsigned long Duracion = 0;      // minutos activo
 unsigned long Ciclo = 0;         // horas entre inicios
+String s1c = "  ";
+String s1ctext="";
 
 // Nombres equipos y señales
 int numero_puerto_MQTT = 1883;
@@ -84,7 +86,6 @@ const char index_html[] PROGMEM = R"rawliteral(
     Contrasena WIFI (Valor actual: %inputpassword%): <input type="text " name="inputpassword">
     <input type="submit" value="Submit" onclick="submitMessage()">
   </form><br>
-
   <form action="/get" target="hidden-form">
     Servidor MQTT (Valor actual: %servidor_MQTT%): <input type="text " name="servidor_MQTT">
     <input type="submit" value="Submit" onclick="submitMessage()">
@@ -351,40 +352,7 @@ void reconnect()
   }
 }
 
-void setup()
-{
-
-  Serial.begin(115200);
-
-  pinMode(Entrada_configuracion, INPUT);
-
-  Valor_entrada_configuracion = digitalRead(Entrada_configuracion);
-
-  // Initialize LittleFS
-  if (!LittleFS.begin())
-  {
-    Serial.println("An Error has occurred while mounting LittleFS");
-    return;
-  }
-
-  if (Valor_entrada_configuracion == HIGH)
-  {
-    conf = true;
-  }
-  else
-  {
-    conf = false;
-  }
-
-  if (conf == true)
-  {
-    // Inicializa Hotspot
-    pinMode(Salida_1, OUTPUT);
-    digitalWrite(Salida_1, LOW);
-    WiFi.softAP(ssidhs, passwordhs);
-    IPAddress IP = WiFi.softAPIP();
-    Serial.print("AP IP address: ");
-    Serial.println(IP);
+void servidorhttp(){
 
     // Send web page with input fields to client
     server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -435,11 +403,48 @@ void setup()
       request->send(200, "text/text", inputMessage); });
     server.onNotFound(notFound);
     server.begin();
+
+}
+
+void setup()
+{
+
+  Serial.begin(115200);
+
+  pinMode(Entrada_configuracion, INPUT);
+
+  Valor_entrada_configuracion = digitalRead(Entrada_configuracion);
+
+  // Initialize LittleFS
+  if (!LittleFS.begin())
+  {
+    Serial.println("An Error has occurred while mounting LittleFS");
+    return;
+  }
+
+  if (Valor_entrada_configuracion == HIGH)
+  {
+    conf = true;
+  }
+  else
+  {
+    conf = false;
+  }
+
+    if (conf == true)
+  {
+    // Inicializa Hotspot
+    pinMode(Salida_1, OUTPUT);
+    digitalWrite(Salida_1, LOW);
+    WiFi.softAP(ssidhs, passwordhs);
+    IPAddress IP = WiFi.softAPIP();
+    Serial.print("AP IP address: ");
+    Serial.println(IP);
+    servidorhttp();
   }
 
   else
   {
-
     String ssida = readFile(LittleFS, "/inputssid.txt");
     String passworda = readFile(LittleFS, "/inputpassword.txt");
     String servidor_MQTTa = readFile(LittleFS, "/servidor_MQTT.txt");
@@ -483,6 +488,7 @@ void setup()
     nombre_completo_tiempo_inicio = String(nombre_dispositivo) + "/" + "tiempo_inicio";
     nombre_completo_duracion = String(nombre_dispositivo) + "/" + "duracion";
     nombre_completo_ciclo = String(nombre_dispositivo) + "/" + "ciclo";
+    s1c = nombre_completo_salida_1 + "c";
 
     client.setServer(nmqtt, numero_puerto_MQTT);
     client.setCallback(callback);
@@ -497,6 +503,7 @@ void setup()
 
     digitalWrite(Salida_1, LOW);
     tempinicio = millis();
+    servidorhttp();
   }
 }
 
@@ -550,6 +557,8 @@ void loop()
       client.publish(sb.c_str(), b.c_str());
       client.publish(sc.c_str(), c.c_str());
       client.publish(sd.c_str(), d.c_str());
+      client.publish(s1c.c_str(), s1ctext.c_str());
+
     }
 
     switch (Estado)
@@ -588,10 +597,10 @@ void loop()
       {
         Estado = 1;
       }
-      String s1c = nombre_completo_salida_1 + "c";
       Serial.println("Cambiando " + nombre_completo_salida_1 + " a: on");
       digitalWrite(Salida_1, HIGH);
-      client.publish(s1c.c_str(), "on");
+      s1ctext="on";
+      client.publish(s1c.c_str(), s1ctext.c_str());
     }
 
     if (stop)
@@ -601,10 +610,11 @@ void loop()
       {
         Estado = 2;
       }
-      String s1c = nombre_completo_salida_1 + "c";
       Serial.println("Cambiando " + nombre_completo_salida_1 + " a: off");
       digitalWrite(Salida_1, LOW);
-      client.publish(s1c.c_str(), "off");
+      s1ctext="off";
+
+      client.publish(s1c.c_str(), s1ctext.c_str());
     }
   }
 }
