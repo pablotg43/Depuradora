@@ -44,7 +44,7 @@ unsigned long Tiempo_inicio = 0; // minutos hasta primer inicio
 unsigned long Duracion = 0;      // minutos activo
 unsigned long Ciclo = 0;         // horas entre inicios
 String s1c = "  ";
-String s1ctext="";
+String s1ctext = "";
 
 // Nombres equipos y señales
 int numero_puerto_MQTT = 1883;
@@ -69,49 +69,152 @@ int value = 0;
 
 // HTML web page to handle 3 input fields (inputString, inputInt, inputFloat)
 const char index_html[] PROGMEM = R"rawliteral(
-<!DOCTYPE HTML><html><head>
-  <title>ESP Input Form</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script>
-    function submitMessage() {
-      alert("Saved value to ESP LittleFS");
-      setTimeout(function(){ document.location.reload(false); }, 500);   
-    }
-  </script></head><body>
-  <form action="/get" target="hidden-form">
-    SSID WIFI (Valor actual: %inputssid%): <input type="text" name="inputssid">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <form action="/get" target="hidden-form">
-    Contrasena WIFI (Valor actual: %inputpassword%): <input type="text " name="inputpassword">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <form action="/get" target="hidden-form">
-    Servidor MQTT (Valor actual: %servidor_MQTT%): <input type="text " name="servidor_MQTT">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <form action="/get" target="hidden-form">
-    Puerto MQTT (Valor actual: %puerto_MQTT%): <input type="text " name="puerto_MQTT">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <form action="/get" target="hidden-form">
-    Nombre Dispositivo (Valor actual: %dispositivo%): <input type="text " name="dispositivo">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <form action="/get" target="hidden-form">
-    Tiempo Inicio (Valor actual: %tiempo_inicio%): <input type="text " name="tiempo_inicio">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-    <form action="/get" target="hidden-form">
-    Duracion (Valor actual: %duracion%): <input type="text " name="duracion">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-    <form action="/get" target="hidden-form">
-    Ciclo (Valor actual: %ciclo%): <input type="text " name="ciclo">
-    <input type="submit" value="Submit" onclick="submitMessage()">
-  </form><br>
-  <iframe style="display:none" name="hidden-form"></iframe>
-</body></html>)rawliteral";
+<!DOCTYPE HTML>
+  <html>
+    <head>
+      <title>ESP Input Form</title>
+      <meta charset="UTF-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script>
+        function submitMessage() {
+          alert("Guardar configuración");
+          setTimeout(function(){ document.location.reload(false); }, 500);   
+        }
+      </script>
+    </head>
+    <body>
+      <style>
+        *{box-sizing:border-box;}
+
+        h1{
+          font-family: Helvetica;
+          font-size: 25px;
+        }
+
+        form{
+          font-family: Helvetica;
+          padding:16px;
+          border-radius:10px;
+          margin:auto;
+          background-color:#f5f2eb;
+          margin: 10px;
+        }
+
+        form label{
+          width: 400px;
+          display: inline-block;
+          font-size: 17px;
+        }
+
+        form input[type="text"]{
+          width: 350px;
+          padding: 3px 10px;
+          border: 1px solid #e0e0e0;
+          border-radius: 3px;
+          margin: 8px 0;
+          display: inline-block;
+          font-size: 17px;
+        }
+
+        form input[type="submit"]{
+          width: 100px;
+          padding: 8px 16px;
+          margin-left: 20px;
+          font-size: 17px;
+        } 
+
+        form input[type="submit"]:hover{
+          cursor:pointer;
+        }
+      </style>
+      <h1> Configuraciones </h1>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="inputssid">SSID WIFI (%inputssid%)</label>
+          <input type="text" id="inputssid" name="inputssid" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>      
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="inputpassword">Contraseña WIFI (%inputpassword%)</label>
+          <input type="text" id="inputpassword" name="inputpassword" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="servidor_MQTT">Servidor MQTT (%servidor_MQTT%)</label>
+          <input type="text" id="servidor_MQTT" name="servidor_MQTT" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="puerto_MQTT">Puerto MQTT (%puerto_MQTT%)</label>
+          <input type="text" id="puerto_MQTT" name="puerto_MQTT" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="dispositivo">Dispositivo (%dispositivo%)</label>
+          <input type="text" id="dispositivo" name="dispositivo" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="tiempo_inicio">Tiempo Inicio (%tiempo_inicio%)</label>
+          <input type="text" id="tiempo_inicio" name="tiempo_inicio" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="duracion">Duración (%duracion%)</label>
+          <input type="text" id="duracion" name="duracion" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="ciclo">Ciclo (%ciclo%)</label>
+          <input type="text" id="ciclo" name="ciclo" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="reiniciar">Reiniciar (Escribir "1" para reiniciar) </label>
+          <input type="text" id="reiniciar" name="reiniciar" placeholder="Introducir dato..">
+          <input type="submit" value="Submit" onclick="submitMessage()">
+        </form>
+      </div>
+      <h1> Estados </h1>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x1">Estado Salida 1 </label>
+          <input type="text" id="x1" name="x1" value="%estado_señal%" disabled>
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x2">Estado WIFI </label>
+          <input type="text" id="x2" name="x2" value="%estado_wifi%" disabled>
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x2">Estado MQTT </label>
+          <input type="text" id="x2" name="x2" value="%estado_MQTT%" disabled>
+        </form>
+      </div>
+
+      <iframe style="display:none" name="hidden-form"></iframe>
+    </body>
+  </html>
+  )rawliteral";
 
 void IRAM_ATTR start_manual()
 {
@@ -170,7 +273,9 @@ void writeFile(fs::FS &fs, const char *path, const char *message)
 
 String processor(const String &var)
 {
+  Serial.print("var: ");
   Serial.println(var);
+
   if (var == "inputssid")
   {
     return readFile(LittleFS, "/inputssid.txt");
@@ -203,6 +308,40 @@ String processor(const String &var)
   {
     return readFile(LittleFS, "/ciclo.txt");
   }
+  else if (var == "estado_señal")
+  {
+    if (digitalRead(Salida_1))
+    {
+      return "On";
+    }
+    else
+    {
+      return "Off";
+    }
+  }
+  else if (var == "estado_wifi")
+  {
+    if (WiFi.status() == WL_CONNECTED)
+    {
+      return "Conectada";
+    }
+    else
+    {
+      return "Desconectada";
+    }
+  }
+  else if (var == "estado_MQTT")
+  {
+    if (client.connected())
+    {
+      return "Conectado";
+    }
+    else
+    {
+      return "Desconectado";
+    }
+  }
+
   return String();
 }
 
@@ -270,7 +409,7 @@ void s4(String tiempo)
 void callback(char *topic, byte *message, unsigned int length)
 {
   Serial.println("");
-  Serial.print("Mensaje recivido en topic: ");
+  Serial.print("Mensaje recibido en topic: ");
   Serial.println(topic);
   Serial.println("Mensaje: ");
 
@@ -352,15 +491,16 @@ void reconnect()
   }
 }
 
-void servidorhttp(){
+void servidorhttp()
+{
 
-    // Send web page with input fields to client
-    server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
-              { request->send_P(200, "text/html", index_html, processor); });
+  // Send web page with input fields to client
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send_P(200, "text/html", index_html, processor); });
 
-    // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
-    server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
-              {
+  // Send a GET request to <ESP_IP>/get?inputString=<inputMessage>
+  server.on("/get", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
       String inputMessage;
       // GET paramssid value on <ESP_IP>/get?inputssid=<inputMessage>
       if (request->hasParam("inputssid")) {
@@ -396,14 +536,19 @@ void servidorhttp(){
         inputMessage = request->getParam("ciclo")->value();
         writeFile(LittleFS, "/ciclo.txt", inputMessage.c_str());
       } 
+      else if (request->hasParam("reiniciar")) {
+        inputMessage = request->getParam("reiniciar")->value();
+        if (inputMessage == "1") {
+          ESP.restart();
+        }
+      } 
       else {
         inputMessage = "No message sent";
       }
       Serial.println(inputMessage);
       request->send(200, "text/text", inputMessage); });
-    server.onNotFound(notFound);
-    server.begin();
-
+  server.onNotFound(notFound);
+  server.begin();
 }
 
 void setup()
@@ -431,7 +576,7 @@ void setup()
     conf = false;
   }
 
-    if (conf == true)
+  if (conf == true)
   {
     // Inicializa Hotspot
     pinMode(Salida_1, OUTPUT);
@@ -440,6 +585,12 @@ void setup()
     IPAddress IP = WiFi.softAPIP();
     Serial.print("AP IP address: ");
     Serial.println(IP);
+
+    String ssida = readFile(LittleFS, "/inputssid.txt");
+    String passworda = readFile(LittleFS, "/inputpassword.txt");
+    ssid = ssida.c_str();
+    password = passworda.c_str();
+    setup_wifi();
     servidorhttp();
   }
 
@@ -458,11 +609,8 @@ void setup()
     Duracion = atol(duraciona.c_str());
     Ciclo = atol(cicloa.c_str());
     Tiempo_inicio = Tiempo_inicio * minutos;
-    Serial.println("Tiempo inicio: " + Tiempo_inicio);
     Duracion = Duracion * minutos;
-    Serial.println("Duracion: " + Duracion);
     Ciclo = Ciclo * horas;
-    Serial.println("Ciclo: " + Ciclo);
 
     if (Duracion == 0)
     {
@@ -503,7 +651,9 @@ void setup()
 
     digitalWrite(Salida_1, LOW);
     tempinicio = millis();
+
     servidorhttp();
+
   }
 }
 
@@ -558,7 +708,6 @@ void loop()
       client.publish(sc.c_str(), c.c_str());
       client.publish(sd.c_str(), d.c_str());
       client.publish(s1c.c_str(), s1ctext.c_str());
-
     }
 
     switch (Estado)
@@ -599,7 +748,7 @@ void loop()
       }
       Serial.println("Cambiando " + nombre_completo_salida_1 + " a: on");
       digitalWrite(Salida_1, HIGH);
-      s1ctext="on";
+      s1ctext = "on";
       client.publish(s1c.c_str(), s1ctext.c_str());
     }
 
@@ -612,7 +761,7 @@ void loop()
       }
       Serial.println("Cambiando " + nombre_completo_salida_1 + " a: off");
       digitalWrite(Salida_1, LOW);
-      s1ctext="off";
+      s1ctext = "off";
 
       client.publish(s1c.c_str(), s1ctext.c_str());
     }
