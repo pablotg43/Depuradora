@@ -64,63 +64,63 @@ const char index_html[] PROGMEM = R"rawliteral(
         <form action="/get" target="hidden-form">
           <label for="inputssid">SSID WIFI (%inputssid%)</label>
           <input type="text" id="inputssid" name="inputssid" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>      
       <div>
         <form action="/get" target="hidden-form">
           <label for="inputpassword">Contraseña WIFI (%inputpassword%)</label>
           <input type="text" id="inputpassword" name="inputpassword" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="servidor_MQTT">Servidor MQTT (%servidor_MQTT%)</label>
           <input type="text" id="servidor_MQTT" name="servidor_MQTT" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="puerto_MQTT">Puerto MQTT (%puerto_MQTT%)</label>
           <input type="text" id="puerto_MQTT" name="puerto_MQTT" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="dispositivo">Dispositivo (%dispositivo%)</label>
           <input type="text" id="dispositivo" name="dispositivo" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="tiempo_inicio">Tiempo Inicio (%tiempo_inicio%)</label>
           <input type="text" id="tiempo_inicio" name="tiempo_inicio" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="duracion">Duración (%duracion%)</label>
           <input type="text" id="duracion" name="duracion" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="ciclo">Ciclo (%ciclo%)</label>
           <input type="text" id="ciclo" name="ciclo" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
           <label for="reiniciar">Reiniciar (Escribir "1" para reiniciar) </label>
           <input type="text" id="reiniciar" name="reiniciar" placeholder="Introducir dato..">
-          <input type="submit" value="Submit" onclick="submitMessage()">
+          <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <h1> Estados </h1>
