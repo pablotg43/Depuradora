@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"name": "Depuradora",
+			"path": "."
+		},
+		{
+			"name": "Comida_gata",
+			"path": "../../../Codigo/Comida Gata/Comida_gata"
+		},
+		{
+			"name": "Cancela",
+			"path": "../../../Codigo/Cancela"
+		}
+	],
+	"settings": {}
+}
