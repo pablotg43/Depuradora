@@ -27,10 +27,10 @@ const int Salida_1 = 14;
 unsigned long horas = 3600000;
 unsigned long minutos = 60000;
 
-unsigned long temppruebas = 0;
-unsigned long tempinicio = 0;
+unsigned long temp_comms = 0;
+unsigned long temp_inicio = 0;
 unsigned long tempfin = 0;
-unsigned long tempciclo = 0;
+unsigned long temp_ciclo = 0;
 int Valor_entrada_configuracion = 0;
 int Valor_entrada_start = 0;
 int Valor_entrada_stop = 0;
@@ -500,7 +500,7 @@ void setup()
     attachInterrupt(Entrada_stop, paro_manual, RISING);
 
     digitalWrite(Salida_1, LOW);
-    tempinicio = millis();
+    temp_inicio = millis();
 
     servidorhttp();
 
@@ -527,9 +527,9 @@ void loop()
 
     unsigned long now = millis();
 
-    if (now - temppruebas > 120000)
+    if (now - temp_comms > 120000)
     {
-      temppruebas = now;
+      temp_comms = now;
       Serial.println(nombre_completo_duracion);
       Serial.println(Duracion);
       Serial.println(nombre_completo_ciclo);
@@ -563,11 +563,11 @@ void loop()
     switch (Estado)
     {
     case 0:
-      if (now - tempinicio > Tiempo_inicio)
+      if (now - temp_inicio > Tiempo_inicio)
       {
         start = true;
         tempfin = now;
-        tempciclo = now;
+        temp_ciclo = now;
       }
 
       break;
@@ -578,7 +578,7 @@ void loop()
       }
       break;
     case 2:
-      if (now - tempciclo > Ciclo)
+      if (now - temp_ciclo > Ciclo)
       {
         start = true;
       }
@@ -590,7 +590,7 @@ void loop()
     if (start)
     {
       tempfin = now;
-      tempciclo = now;
+      temp_ciclo = now;
       start = false;
       if (Estado != 3)
       {
