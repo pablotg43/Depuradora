@@ -97,22 +97,22 @@ const char index_html[] PROGMEM = R"rawliteral(
       </div>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="Tinicio">Tinicio (%Tinicio%)</label>
-          <input type="text" id="Tinicio" name="Tinicio" placeholder="Introducir dato..">
+          <label for="tiempo_inicio">Tiempo Inicio (%tiempo_inicio%)</label>
+          <input type="text" id="tiempo_inicio" name="tiempo_inicio" placeholder="Introducir dato..">
           <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="Tciclo">Tciclo (%Tciclo%)</label>
-          <input type="text" id="Tciclo" name="Tciclo" placeholder="Introducir dato..">
+          <label for="duracion">Duración (%duracion%)</label>
+          <input type="text" id="duracion" name="duracion" placeholder="Introducir dato..">
           <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="Tduracion">Tduracion (%Tduracion%)</label>
-          <input type="text" id="Tduracion" name="Tduracion" placeholder="Introducir dato..">
+          <label for="ciclo">Ciclo (%ciclo%)</label>
+          <input type="text" id="ciclo" name="ciclo" placeholder="Introducir dato..">
           <input type="submit" value="Enviar" onclick="submitMessage()">
         </form>
       </div>
@@ -126,28 +126,23 @@ const char index_html[] PROGMEM = R"rawliteral(
       <h1> Estados </h1>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="x5">Estado WIFI </label>
-          <input type="text" id="x5" name="x5" value="%estado_wifi%" disabled>
+          <label for="x1">Estado Salida 1 </label>
+          <input type="text" id="x1" name="x1" value="%estado_señal%" disabled>
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="x6">Estado MQTT </label>
-          <input type="text" id="x6" name="x6" value="%estado_MQTT%" disabled>
+          <label for="x2">Estado WIFI </label>
+          <input type="text" id="x2" name="x2" value="%estado_wifi%" disabled>
         </form>
       </div>
       <div>
         <form action="/get" target="hidden-form">
-          <label for="x6">Temperatura </label>
-          <input type="text" id="x6" name="x6" value="%Temperatura%" disabled>
+          <label for="x2">Estado MQTT </label>
+          <input type="text" id="x2" name="x2" value="%estado_MQTT%" disabled>
         </form>
       </div>
-      <div>
-        <form action="/get" target="hidden-form">
-          <label for="x6">Humedad </label>
-          <input type="text" id="x6" name="x6" value="%Humedad%" disabled>
-        </form>
-      </div>
+
       <iframe style="display:none" name="hidden-form"></iframe>
     </body>
   </html>
