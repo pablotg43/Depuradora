@@ -70,11 +70,11 @@ unsigned long Tduracion = 10000; // Tiempo duración activo (mins)
 float Temperatura=0;
 float Humedad=0;
 float Presion=0;
-float temp(NAN);
-float hum(NAN); 
-float pres(NAN);
-float dewPoint(NAN);
-float heatIndex(NAN);
+float temp=0;
+float hum=0; 
+float pres=0;
+float dewPoint=0;
+float heatIndex=0;
 BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
 BME280::PresUnit presUnit(BME280::PresUnit_hPa);
 EnvironmentCalculations::TempUnit envTempUnit =  EnvironmentCalculations::TempUnit_Celsius;
@@ -389,6 +389,11 @@ void reconnect()
             {
                 Serial.println(nombre_completo_temporizadores[i]);
             }            
+            for (int i = 0; i <= 4; i++)
+            {
+                Serial.println(nombre_completo_sensor[i]);
+            }    
+
 
             Serial.println(nombre_estado);
 
@@ -616,6 +621,11 @@ void comms()
     {
         Serial.println(nombre_completo_entradas[i]);
     }
+    for (int i = 0; i <= 4; i++)
+    {
+        Serial.println(nombre_completo_sensor[i]);
+    }    
+    
     Serial.println("Inicio Reporte");
     Serial.println(nombre_estado);
     Serial.println((String)Tinicio);
@@ -690,7 +700,7 @@ void medida(){
 
     Tmedida=now;
 
-    for (int i = 0; i <= 2; i++)
+    for (int i = 0; i <= 4; i++)
     {
         sb[i] = nombre_completo_sensor[i]+ "c";
     }
@@ -704,7 +714,9 @@ void medida(){
     
     float dp = EnvironmentCalculations::DewPoint(t, h, envTempUnit);
     float hi = EnvironmentCalculations::HeatIndex(t, h, envTempUnit);
-
+    // Serial.print("Punto Rocío = "); Serial.println(dp);
+    // Serial.print("HeatIndex = "); Serial.println(hi);    
+    
     if (! isnan(t)) {  // check if 'is not a number'
         if ((t > Temperatura*1.02) || (t <Temperatura*.98)){
             Temperatura=t;
@@ -745,24 +757,24 @@ void medida(){
         if ((dp > dewPoint+0.3) || (dp <dewPoint-0.3)){
             dewPoint=dp;
             Serial.print("Punto Rocío = "); Serial.println(dp);
-            String Pr=(String)dewPoint;
-            client.publish(sb[3].c_str(), Pr.c_str());
+            String dpc=(String)dewPoint;
+            client.publish(sb[3].c_str(), dpc.c_str());
         }
     } 
     else { 
-        Serial.println("Failed to read pressure");
+        Serial.println("Failed to read DP");
     }
 
     if (! isnan(hi)) {  // check if 'is not a number'
         if ((hi > heatIndex+0.3) || (hi <heatIndex-0.3)){
             heatIndex=hi;
             Serial.print("HeatIndex = "); Serial.println(hi);
-            String Pr=(String)heatIndex;
-            client.publish(sb[4].c_str(), Pr.c_str());
+            String hic=(String)heatIndex;
+            client.publish(sb[4].c_str(), hic.c_str());
         }
     } 
     else { 
-        Serial.println("Failed to read pressure");
+        Serial.println("Failed to read HI");
     }
 }
 
