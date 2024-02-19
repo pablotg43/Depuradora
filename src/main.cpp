@@ -118,31 +118,33 @@ void proximoEstado()
     switch (estado) {
         case Estados::Reposo:
             if (Tciclo>0) {estado=Estados::Esperando_inicio; cambio_estado=true; Temp_Tinicio=now;}
-            if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
-            if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
         break;
         case Estados::Esperando_inicio:
             if (Tciclo==0) {estado=Estados::Reposo; cambio_estado=true;}
-            if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
-            if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
-            if (now - Temp_Tinicio > Tinicio) { estado=Estados::Activa_ciclo; cambio_estado=true; Temp_Tduracion=now; Temp_Tciclo=now;}
+            else if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (now - Temp_Tinicio > Tinicio) { estado=Estados::Activa_ciclo; cambio_estado=true; Temp_Tduracion=now; Temp_Tciclo=now;}
         break;
         case Estados::Esperando_ciclo:
             if (Tciclo==0) {estado=Estados::Reposo; cambio_estado=true;}
-            if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
-            if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
-            if (now - Temp_Tciclo > Tciclo) { estado=Estados::Activa_ciclo; cambio_estado=true; Temp_Tduracion=now; Temp_Tciclo=now;}
+            else if (ordenes[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (entradas[0]) {estado=Estados::Activa_manual; cambio_estado=true; Temp_Tduracion=now;}
+            else if (now - Temp_Tciclo > Tciclo) { estado=Estados::Activa_ciclo; cambio_estado=true; Temp_Tduracion=now; Temp_Tciclo=now;}
         break;
         case Estados::Activa_manual:
-            if (ordenes[1]) {estado=Estados::Reposo; cambio_estado=true;}
-            if (entradas[1]) {estado=Estados::Reposo; cambio_estado=true;}
             if ((now - Temp_Tduracion > Tduracion) && (Tciclo==0) ) {estado=Estados::Reposo; cambio_estado=true;}
-            if ((now - Temp_Tduracion > Tduracion) && (Tciclo>0) ) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
+            else if ((now - Temp_Tduracion > Tduracion) && (Tciclo>0) ) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
+            else if ((ordenes[1]) && (Tciclo==0) ) {estado=Estados::Reposo; cambio_estado=true;}
+            else if ((ordenes[1]) && (Tciclo>0) ) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
+            else if ((entradas[1]) && (Tciclo==0) ) {estado=Estados::Reposo; cambio_estado=true;}
+            else if ((entradas[1]) && (Tciclo>0) ) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
         break;
         case Estados::Activa_ciclo:
             if (ordenes[1]) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
-            if (entradas[1]) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
-            if (now - Temp_Tduracion > Tduracion) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
+            else if (entradas[1]) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
+            else if (now - Temp_Tduracion > Tduracion) {estado=Estados::Esperando_ciclo; cambio_estado=true;}
         break;
         case Estados::Configuracion:
         break;
@@ -261,6 +263,18 @@ String processor(const String &var)
     {
         return (String)Humedad;
     }
+    else if (var == "Presion")
+    {
+        return (String)Presion;
+    }
+    else if (var == "Puntorocio")
+    {
+        return (String)dewPoint;
+    }
+    else if (var == "Heatindex")
+    {
+        return (String)heatIndex;
+    }
     return String();
 }
 
@@ -349,7 +363,8 @@ void callback(char *topic, byte *message, unsigned int length)
         String nombre = "Tciclo.txt";
         Tciclo = duracion * horas;
         Serial.println("Tciclo: " + Tciclo);
-        writeFile(LittleFS, nombre.c_str(), mensaje.c_str());    }
+        writeFile(LittleFS, nombre.c_str(), mensaje.c_str());    
+        }
 
     if (String(topic) == nombre_completo_temporizadores[2])
     {
@@ -718,7 +733,7 @@ void medida(){
     // Serial.print("HeatIndex = "); Serial.println(hi);    
     
     if (! isnan(t)) {  // check if 'is not a number'
-        if ((t > Temperatura*1.02) || (t <Temperatura*.98)){
+        if ((t > Temperatura+0.3) || (t <Temperatura-0.3)){
             Temperatura=t;
             Serial.print("Temp *C = "); Serial.print(t); Serial.print("\t\t");
             String Ta=(String)Temperatura;
@@ -730,7 +745,7 @@ void medida(){
     }
   
     if (! isnan(h)) {  // check if 'is not a number'
-        if ((h > Humedad*1.02) || (h <Humedad*.98)){
+        if ((h > Humedad+0.3) || (h <Humedad-0.3)){
             Humedad=h;
             Serial.print("Hum. % = "); Serial.println(h);
             String Ha=(String)Humedad;

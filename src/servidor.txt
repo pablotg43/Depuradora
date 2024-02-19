@@ -148,6 +148,24 @@ const char index_html[] PROGMEM = R"rawliteral(
           <input type="text" id="x6" name="x6" value="%Humedad%" disabled>
         </form>
       </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x6">Presión </label>
+          <input type="text" id="x6" name="x6" value="%Presion%" disabled>
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x6">Punto de Rocío </label>
+          <input type="text" id="x6" name="x6" value="%Puntorocio%" disabled>
+        </form>
+      </div>
+      <div>
+        <form action="/get" target="hidden-form">
+          <label for="x6">Sensación Térmica </label>
+          <input type="text" id="x6" name="x6" value="%Heatindex%" disabled>
+        </form>
+      </div>
       <iframe style="display:none" name="hidden-form"></iframe>
     </body>
   </html>
