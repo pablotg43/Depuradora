@@ -18,6 +18,8 @@ AsyncWebServer server(80);
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 BME280I2C bme;
 
+int errors=0;
+
 const char *ssid = "ESP32-Access-Point";
 const char *password = "123456789";
 
@@ -381,6 +383,11 @@ void reconnect()
 
     while (!client.connected())
     {
+        if ((WiFi.status() != WL_CONNECTED))
+        {
+            setup_wifi();
+        }
+
         Serial.print("Conectando a servidor MQTT...");
         // Attempt to connect
         String clientId = "WemoClient-";
@@ -419,6 +426,7 @@ void reconnect()
             client.subscribe(nombre_completo_temporizadores[0].c_str(), 1);
             client.subscribe(nombre_completo_temporizadores[1].c_str(), 1);
             client.subscribe(nombre_completo_temporizadores[2].c_str(), 1);
+            errors=0;
         }
 
         else
@@ -427,6 +435,10 @@ void reconnect()
             Serial.print(client.state());
             Serial.println(" reintantando en 5 segundos");
             delay(5000);
+            errors+=1;
+            if (errors>100) {
+                ESP.restart();
+            }
         }
     }
 }
