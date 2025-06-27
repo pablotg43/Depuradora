@@ -295,10 +295,16 @@ void setup_wifi()
     {
         Serial.print(".");
         delay(250);
+        errors++;
+        if (errors>200) {
+            errors=0;
+            ESP.restart();
+        }
     }
+    errors=0;
     Serial.println("");
     Serial.println("WiFi Conectada");
-    Serial.println("Direccion IP: ");
+    Serial.print("Direccion IP: ");
     Serial.println(WiFi.localIP());
 }
 
@@ -436,7 +442,8 @@ void reconnect()
             Serial.println(" reintantando en 5 segundos");
             delay(5000);
             errors+=1;
-            if (errors>100) {
+            if (errors>10) {
+                errors=0;
                 ESP.restart();
             }
         }
@@ -636,29 +643,6 @@ void comms()
 {
     temp_Tcomms = now;
 
-    for (int i = 0; i <= 2; i++)
-    {
-        Serial.println(nombre_completo_temporizadores[i]);
-    }
-    for (int i = 0; i <= 1; i++)
-    {
-        Serial.println(nombre_completo_ordenes[i]);
-    }
-    for (int i = 0; i <= 1; i++)
-    {
-        Serial.println(nombre_completo_entradas[i]);
-    }
-    for (int i = 0; i <= 4; i++)
-    {
-        Serial.println(nombre_completo_sensor[i]);
-    }    
-    
-    Serial.println("Inicio Reporte");
-    Serial.println(nombre_estado);
-    Serial.println((String)Tinicio);
-    Serial.println((String)Tciclo);
-    Serial.println((String)Tduracion);
-
     unsigned long t1 = Tinicio/minutos;
     unsigned long t2 = Tciclo/horas;
     unsigned long t3 = Tduracion/minutos;
@@ -711,6 +695,16 @@ void comms()
             a="Configuracion";
         break;
     }
+
+    Serial.print("Inicio Reporte: ");
+    Serial.println(millis());
+    Serial.print("estado: ");
+    Serial.println(estado);
+    Serial.print("nombre_estado: ");
+    Serial.println(a);
+    Serial.print("errors: ");
+    Serial.println(errors);
+    Serial.println(" ---------------------------------");
 
     client.publish(sb[0].c_str(), T1a.c_str());
     client.publish(sb[1].c_str(), T2a.c_str());
